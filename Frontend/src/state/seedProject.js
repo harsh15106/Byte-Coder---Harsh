@@ -17,6 +17,28 @@ export const seedProject = {
     feasibilityScore: 82,
     innovationScore: 74,
     complexity: 'Moderate',
+    targetAudience: 'CS & Engineering Students preparing for tech interviews (Software, Data, Product)',
+    techStack: ['React', 'Node.js', 'Firebase', 'OpenAI API', 'TailwindCSS'],
+    competitors: [
+      {
+        name: 'LeetCode / HackerRank',
+        strength: 'Massive question bank & auto-grader',
+        weakness: 'Lacks interactive conversational feedback & soft-skill evaluation',
+        ourMoat: 'AI real-time voice & code feedback with personalized sprint plans'
+      },
+      {
+        name: 'Pramp / Interviewing.io',
+        strength: 'Real human peer interviews',
+        weakness: 'High scheduling latency, quality varies by peer',
+        ourMoat: 'Instant 24/7 AI availability with structured scoring rubrics'
+      }
+    ],
+    feasibilityBreakdown: {
+      technicalComplexity: 85,
+      timeFeasibility: 88,
+      marketDemand: 90,
+      resourceAvailability: 78
+    },
     strengths: [
       'Clear target user with urgent motivation',
       'Natural AI-assisted feedback loop',

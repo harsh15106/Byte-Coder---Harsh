@@ -1,6 +1,6 @@
 import {
+  Bot,
   ClipboardList,
-  KanbanSquare,
   LayoutDashboard,
   Lightbulb,
   Map,
@@ -16,7 +16,7 @@ export const navItems = [
   { id: 'analyzer', label: 'Analyzer', icon: Lightbulb },
   { id: 'scope', label: 'Scope', icon: SlidersHorizontal },
   { id: 'roadmap', label: 'Roadmap', icon: Map },
-  { id: 'tasks', label: 'Tasks', icon: KanbanSquare },
+  { id: 'aichat', label: 'AI Chat', icon: Bot },
   { id: 'pitch', label: 'Pitch', icon: Presentation },
   { id: 'risks', label: 'Risks', icon: ShieldAlert },
 ];

@@ -3,7 +3,7 @@ import {
     Lightbulb,
     Target,
     Map,
-    ListTodo,
+    Bot,
     Presentation,
     Bell,
     Search,
@@ -32,9 +32,9 @@ const navItems = [
         icon: Map,
     },
     {
-        id: "tasks",
-        label: "Tasks",
-        icon: ListTodo,
+        id: "aichat",
+        label: "AI Chat",
+        icon: Bot,
     },
     {
         id: "pitch",

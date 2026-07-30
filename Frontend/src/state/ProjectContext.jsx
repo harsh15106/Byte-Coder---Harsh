@@ -1,5 +1,5 @@
-import { createContext, useContext, useMemo, useReducer } from 'react';
-import { seedProject } from './seedProject';
+import { createContext, useContext, useMemo, useReducer } from "react";
+import { seedProject } from "./seedProject";
 
 const ProjectContext = createContext(null);
 
@@ -10,7 +10,7 @@ const cloneSeedProject = () => {
 };
 
 const initialState = {
-  activeView: 'dashboard',
+  activeView: "dashboard",
   project: cloneSeedProject(),
   ui: {
     isAnalyzing: false,
@@ -19,15 +19,15 @@ const initialState = {
 
 const projectReducer = (state, action) => {
   switch (action.type) {
-    case 'SET_ACTIVE_VIEW':
+    case "SET_ACTIVE_VIEW":
       return {
         ...state,
         activeView: action.payload,
       };
-    case 'CREATE_PROJECT':
+    case "CREATE_PROJECT":
       return {
         ...state,
-        activeView: 'dashboard',
+        activeView: "dashboard",
         project: {
           ...cloneSeedProject(),
           meta: {
@@ -37,7 +37,7 @@ const projectReducer = (state, action) => {
           },
           ideaAnalysis: {
             ...state.project.ideaAnalysis,
-            status: 'loading',
+            status: "loading",
           },
         },
         ui: {
@@ -45,7 +45,7 @@ const projectReducer = (state, action) => {
           isAnalyzing: true,
         },
       };
-    case 'SET_ANALYSIS_LOADING':
+    case "SET_ANALYSIS_LOADING":
       return {
         ...state,
         ui: {
@@ -56,11 +56,11 @@ const projectReducer = (state, action) => {
           ...state.project,
           ideaAnalysis: {
             ...state.project.ideaAnalysis,
-            status: action.payload ? 'loading' : 'ready',
+            status: action.payload ? "loading" : "ready",
           },
         },
       };
-    case 'UPDATE_IDEA_ANALYSIS':
+    case "UPDATE_IDEA_ANALYSIS":
       return {
         ...state,
         project: {
@@ -68,7 +68,7 @@ const projectReducer = (state, action) => {
           ideaAnalysis: {
             ...state.project.ideaAnalysis,
             ...action.payload,
-            status: 'ready',
+            status: "ready",
           },
         },
         ui: {
@@ -76,7 +76,7 @@ const projectReducer = (state, action) => {
           isAnalyzing: false,
         },
       };
-    case 'UPDATE_ROADMAP_VIEW':
+    case "UPDATE_ROADMAP_VIEW":
       return {
         ...state,
         project: {
@@ -87,7 +87,103 @@ const projectReducer = (state, action) => {
           },
         },
       };
-    case 'ADD_RISK':
+    case "UPDATE_ROADMAP_PHASES":
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          roadmap: {
+            ...state.project.roadmap,
+            phases: action.payload,
+          },
+        },
+      };
+    case "ADD_ROADMAP_PHASE":
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          roadmap: {
+            ...state.project.roadmap,
+            phases: [...state.project.roadmap.phases, action.payload],
+          },
+        },
+      };
+    case "DELETE_ROADMAP_PHASE":
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          roadmap: {
+            ...state.project.roadmap,
+            phases: state.project.roadmap.phases.filter(
+              (p) => p.id !== action.payload,
+            ),
+          },
+        },
+      };
+    case "ADD_ROADMAP_TASK":
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          roadmap: {
+            ...state.project.roadmap,
+            phases: state.project.roadmap.phases.map((phase) =>
+              phase.id === action.payload.phaseId
+                ? {
+                    ...phase,
+                    tasks: [...(phase.tasks || []), action.payload.taskTitle],
+                  }
+                : phase,
+            ),
+          },
+        },
+      };
+    case "SYNC_ROADMAP_TO_TASKS": {
+      const newItems = { ...state.project.tasks.items };
+      const newTodo = [...state.project.tasks.columns.todo];
+
+      let index = Object.keys(newItems).length + 1;
+      state.project.roadmap.phases.forEach((phase) => {
+        (phase.tasks || []).forEach((taskTitle) => {
+          const exists = Object.values(newItems).some(
+            (item) => item.title === taskTitle,
+          );
+          if (!exists) {
+            const taskId = `task-rm-${index++}`;
+            newItems[taskId] = {
+              id: taskId,
+              title: taskTitle,
+              assignee: "AI Team",
+              priority: phase.priority || "Medium",
+              estimateHours: Math.max(
+                1,
+                Math.round(phase.estimateHours / (phase.tasks.length || 1)),
+              ),
+              blocked: false,
+            };
+            newTodo.push(taskId);
+          }
+        });
+      });
+
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          tasks: {
+            ...state.project.tasks,
+            columns: {
+              ...state.project.tasks.columns,
+              todo: newTodo,
+            },
+            items: newItems,
+          },
+        },
+      };
+    }
+    case "ADD_RISK":
       return {
         ...state,
         project: {
@@ -95,7 +191,7 @@ const projectReducer = (state, action) => {
           risks: [action.payload, ...state.project.risks],
         },
       };
-    case 'TOGGLE_RISK':
+    case "TOGGLE_RISK":
       return {
         ...state,
         project: {
@@ -126,7 +222,10 @@ export const deriveProjectStats = (project) => {
     0,
     Math.ceil(project.meta.durationHours - elapsedHours),
   );
-  const remainingEstimateHours = [...project.tasks.columns.todo, ...project.tasks.columns.inProgress]
+  const remainingEstimateHours = [
+    ...project.tasks.columns.todo,
+    ...project.tasks.columns.inProgress,
+  ]
     .map((taskId) => project.tasks.items[taskId]?.estimateHours ?? 0)
     .reduce((sum, hours) => sum + hours, 0);
 
@@ -162,7 +261,7 @@ export const useProject = () => {
   const context = useContext(ProjectContext);
 
   if (!context) {
-    throw new Error('useProject must be used inside a ProjectProvider');
+    throw new Error("useProject must be used inside a ProjectProvider");
   }
 
   return context;
