@@ -3,6 +3,8 @@ import WorkspaceNavbar from "../components/workspace/WorkspaceNavbar";
 import IdeaAnalyzerView from "../components/workspace/IdeaAnalyzerView";
 import RoadmapBuilderView from "../components/workspace/RoadmapBuilderView";
 import AIChatView from "../components/workspace/AIChatView";
+import ScopeView from "../components/workspace/ScopeView";
+import PitchView from "../components/workspace/PitchView";
 import { useProject } from "../state/ProjectContext";
 import {
     Lightbulb,
@@ -42,7 +44,7 @@ export default function Workspace() {
                                         Welcome Back 👋
                                     </h1>
                                     <p className="mt-3 text-lg text-gray-300">
-                                        Continue analyzing ideas, building roadmaps, and chatting with your AI assistant.
+                                        Continue analyzing ideas, building roadmaps, defining scope, and pitching your AI project.
                                     </p>
 
                                     <div className="mt-8 max-w-md">
@@ -60,10 +62,10 @@ export default function Workspace() {
                                 </div>
 
                                 <button
-                                    onClick={() => setActiveTab("aichat")}
+                                    onClick={() => setActiveTab("idea")}
                                     className="flex items-center gap-2 rounded-2xl bg-violet-600 px-7 py-4 font-semibold text-white transition hover:scale-105 hover:bg-violet-500 shadow-lg shadow-violet-600/30"
                                 >
-                                    Ask AI Assistant
+                                    Review Idea Report
                                     <ArrowRight size={18} />
                                 </button>
                             </div>
@@ -91,16 +93,16 @@ export default function Workspace() {
                                 />
 
                                 <ActionCard
-                                    icon={<Bot size={26} />}
-                                    title="AI Chat"
-                                    subtitle="Ask AI assistant about project context."
-                                    onClick={() => setActiveTab("aichat")}
+                                    icon={<Target size={26} />}
+                                    title="Define Scope"
+                                    subtitle="Locked 24-hour MVP feature specification."
+                                    onClick={() => setActiveTab("scope")}
                                 />
 
                                 <ActionCard
                                     icon={<Presentation size={26} />}
                                     title="Build Pitch"
-                                    subtitle="Generate 60s hackathon presentation."
+                                    subtitle="Review 60-second narrative pitch deck."
                                     onClick={() => setActiveTab("pitch")}
                                 />
                             </div>
@@ -110,7 +112,7 @@ export default function Workspace() {
                         <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                             <DashboardCard
                                 title="Feasibility Score"
-                                value={`${project.ideaAnalysis?.feasibilityScore || 84}%`}
+                                value={`${project.ideaAnalysis?.feasibilityScore || 82}%`}
                                 subtitle="Calculated from scope & tech"
                             />
 
@@ -121,9 +123,9 @@ export default function Workspace() {
                             />
 
                             <DashboardCard
-                                title="Roadmap Phases"
-                                value={`${project.roadmap?.phases?.length || 5}`}
-                                subtitle="Milestone Phases"
+                                title="MVP Scope Items"
+                                value={`${project.scope?.mvpFeatures?.length || 4}`}
+                                subtitle="Locked MVP Features"
                             />
 
                             <DashboardCard
@@ -147,11 +149,11 @@ export default function Workspace() {
                                     />
                                     <ActivityItem
                                         icon={<CheckCircle2 size={18} />}
-                                        text="Milestone Roadmap Generated"
+                                        text="Scope Definition & MVP features locked"
                                     />
                                     <ActivityItem
                                         icon={<CheckCircle2 size={18} />}
-                                        text="AI Assistant Co-Pilot Connected"
+                                        text="60-Second Pitch Narrative generated"
                                     />
                                 </div>
                             </DashboardPanel>
@@ -164,11 +166,11 @@ export default function Workspace() {
                                     />
                                     <ActivityItem
                                         icon={<Sparkles size={18} />}
-                                        text="Focus MVP on real-time feedback loop before adding extra modes."
+                                        text="Scope locked: Deferred v2 peer rooms to guarantee 24h delivery."
                                     />
                                     <ActivityItem
                                         icon={<Sparkles size={18} />}
-                                        text="Ask AI Chat assistant for tailored code architecture or pitch tips."
+                                        text="Pitch narrative prepared in single 60-second verbal paragraph."
                                     />
                                 </div>
                             </DashboardPanel>
@@ -209,26 +211,14 @@ export default function Workspace() {
                     <AIChatView />
                 )}
 
-                {/* Scope Tab Placeholder */}
+                {/* Scope View */}
                 {activeTab === "scope" && (
-                    <ModuleCard
-                        title="Scope Definition & MVP Planner"
-                        subtitle="Filter core MVP features from nice-to-haves to keep 24-hour delivery realistic."
-                        icon={<Target size={28} className="text-violet-400" />}
-                        onAction={() => setActiveTab("roadmap")}
-                        actionText="View Roadmap"
-                    />
+                    <ScopeView />
                 )}
 
-                {/* Pitch Tab Placeholder */}
+                {/* Pitch View */}
                 {activeTab === "pitch" && (
-                    <ModuleCard
-                        title="60-Second Pitch Deck Builder"
-                        subtitle="Generates concise problem, solution, architecture, and impact narrative for hackathon judges."
-                        icon={<Presentation size={28} className="text-fuchsia-400" />}
-                        onAction={() => setActiveTab("aichat")}
-                        actionText="Ask AI Assistant for Pitch Tips"
-                    />
+                    <PitchView />
                 )}
             </main>
         </div>
@@ -310,25 +300,6 @@ export default function Workspace() {
                 <span className="rounded-lg bg-violet-600/20 border border-violet-500/30 px-3 py-1 text-xs font-semibold text-violet-300">
                     {due}
                 </span>
-            </div>
-        );
-    }
-
-    function ModuleCard({ title, subtitle, icon, onAction, actionText }) {
-        return (
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl text-center space-y-4 max-w-2xl mx-auto my-12 animate-fadeIn">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10">
-                    {icon}
-                </div>
-                <h2 className="text-2xl font-bold text-white">{title}</h2>
-                <p className="text-sm text-gray-300 max-w-md mx-auto">{subtitle}</p>
-                <button
-                    onClick={onAction}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-violet-600 px-6 py-3.5 font-semibold text-white hover:bg-violet-500 transition shadow-lg shadow-violet-600/25 text-sm"
-                >
-                    {actionText}
-                    <ArrowRight size={16} />
-                </button>
             </div>
         );
     }
